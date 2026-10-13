@@ -1,0 +1,597 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroQuest | AI Brain Training</title>
+
+<style>
+:root {
+  --bg: #0b1020;
+  --panel: #151d32;
+  --panel2: #1c2740;
+  --text: #f3f5ff;
+  --muted: #aab5d0;
+  --purple: #a78bfa;
+  --cyan: #67e8f9;
+  --green: #6ee7b7;
+  --red: #fda4af;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #20294b, var(--bg) 58%);
+  color: var(--text);
+  font-family: Inter, system-ui, Arial, sans-serif;
+  min-height: 100vh;
+}
+button { font: inherit; cursor: pointer; }
+button:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 6%;
+  border-bottom: 1px solid #ffffff15;
+}
+.logo { font-size: 23px; font-weight: 850; }
+.logo span { color: var(--purple); }
+.pill {
+  border: 1px solid #ffffff22;
+  border-radius: 30px;
+  padding: 8px 12px;
+  color: var(--cyan);
+  font-size: 12px;
+}
+main { width: min(1050px, 92%); margin: 35px auto; }
+.hero { text-align: center; margin-bottom: 30px; }
+.eyebrow {
+  color: var(--cyan); font-size: 12px;
+  letter-spacing: 3px; font-weight: 800;
+}
+h1 { font-size: clamp(32px, 6vw, 52px); margin: 12px 0; }
+h1 span { color: var(--purple); }
+p { color: var(--muted); line-height: 1.6; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.card, .panel {
+  background: linear-gradient(145deg, #1c2740, #12192c);
+  border: 1px solid #ffffff14;
+  border-radius: 20px;
+  padding: 23px;
+}
+.card { transition: transform .2s, border-color .2s; }
+.card:hover { transform: translateY(-4px); border-color: var(--purple); }
+.emoji { font-size: 36px; }
+h2 { font-size: 20px; }
+h3 { margin: 8px 0; }
+.small { font-size: 13px; }
+.btn {
+  border: 0; border-radius: 12px; padding: 12px 17px;
+  font-weight: 750; background: var(--purple); color: #17132b;
+}
+.btn:hover { filter: brightness(1.12); }
+.btn.secondary {
+  background: #26324e; color: var(--text);
+  border: 1px solid #ffffff18;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.card .btn { width: 100%; margin-top: 12px; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin: 24px 0;
+}
+.stat {
+  background: #ffffff08; border: 1px solid #ffffff12;
+  padding: 15px; border-radius: 14px;
+}
+.stat strong { display: block; font-size: 24px; margin-top: 6px; }
+.muted { color: var(--muted); font-size: 12px; }
+.hidden { display: none !important; }
+.topline {
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 12px;
+}
+.progress {
+  background: #ffffff12; height: 7px; border-radius: 20px;
+  overflow: hidden; margin: 18px 0;
+}
+.progress div {
+  height: 100%; width: 0; background: var(--cyan);
+  transition: width .3s;
+}
+.question { font-size: clamp(25px, 5vw, 38px); text-align: center; }
+.answers {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin: 24px 0;
+}
+.answer {
+  background: var(--panel2); color: var(--text);
+  border: 1px solid #ffffff20; border-radius: 12px;
+  padding: 16px; min-height: 55px; font-weight: 700;
+}
+.answer:hover { border-color: var(--cyan); }
+.answer.correct { background: #064e3b; border-color: var(--green); }
+.answer.wrong { background: #54212d; border-color: var(--red); }
+.sequence {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 10px; margin: 25px 0;
+}
+.tile {
+  min-width: 65px; min-height: 65px;
+  background: #283456; color: white;
+  border: 2px solid #ffffff1a; border-radius: 14px;
+  font-size: 26px; font-weight: 800;
+}
+.tile:hover { border-color: var(--cyan); }
+.tile.lit { background: var(--purple); color: #17132b; }
+.tile:disabled { cursor: default; opacity: .8; }
+.notice {
+  background: #ffffff08; border-radius: 12px;
+  padding: 13px; color: var(--muted); text-align: center;
+}
+.actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+footer { text-align: center; padding: 24px; color: var(--muted); font-size: 12px; }
+@media(max-width:700px) {
+  .grid { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  header { padding: 16px 4%; }
+  .answers { grid-template-columns: 1fr; }
+  main { margin-top: 24px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">🧠 Neuro<span>Quest</span></div>
+  <div class="pill">✦ ADAPTIVE BRAIN TRAINING</div>
+</header>
+
+<main>
+  <section id="home">
+    <div class="hero">
+      <div class="eyebrow">THINK · PLAY · IMPROVE</div>
+      <h1>Challenge your <span>brain.</span></h1>
+      <p>Play quick puzzles. Beat your best score.
+      Get challenges that adapt to your performance.</p>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <div class="emoji">🔮</div>
+        <h2>Memory Matrix</h2>
+        <p class="small">Remember a sequence of glowing tiles and repeat it.</p>
+        <button class="btn" onclick="startGame('memory')">Play Memory</button>
+      </article>
+
+      <article class="card">
+        <div class="emoji">🧩</div>
+        <h2>Logic Lab</h2>
+        <p class="small">Solve reasoning puzzles and sharpen your logic.</p>
+        <button class="btn" onclick="startGame('logic')">Play Logic</button>
+      </article>
+
+      <article class="card">
+        <div class="emoji">🔢</div>
+        <h2>Number Ninja</h2>
+        <p class="small">Find number patterns and predict the next number.</p>
+        <button class="btn" onclick="startGame('number')">Play Numbers</button>
+      </article>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="muted">TOTAL SCORE</span><strong id="totalScore">0</strong></div>
+      <div class="stat"><span class="muted">GAMES PLAYED</span><strong id="gamesPlayed">0</strong></div>
+      <div class="stat"><span class="muted">BEST ACCURACY</span><strong id="bestAccuracy">0%</strong></div>
+      <div class="stat"><span class="muted">BEST STREAK</span><strong id="bestStreak">0</strong></div>
+    </div>
+
+    <section class="panel">
+      <div class="topline">
+        <div>
+          <h2>🤖 Your AI Coach</h2>
+          <p id="coach" class="small">Play a round to receive your first personalized practice tip.</p>
+        </div>
+        <button class="btn secondary" onclick="resetData()">Reset data</button>
+      </div>
+      <p class="muted">Progress is saved in this browser on this device.</p>
+    </section>
+  </section>
+
+  <section id="game" class="panel hidden">
+    <div class="topline">
+      <button class="btn secondary" onclick="goHome()">← Home</button>
+      <span class="pill" id="gameLabel">GAME</span>
+      <span class="pill" id="difficulty">LEVEL 1</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="muted">ROUND SCORE</span><strong id="roundScore">0</strong></div>
+      <div class="stat"><span class="muted">ACCURACY</span><strong id="accuracy">0%</strong></div>
+      <div class="stat"><span class="muted">STREAK</span><strong id="streak">0</strong></div>
+      <div class="stat"><span class="muted">TIME</span><strong id="timer">0s</strong></div>
+    </div>
+
+    <div class="progress"><div id="progressBar"></div></div>
+    <p class="muted" id="roundLabel">CHALLENGE 1 OF 5</p>
+    <h2 class="question" id="question">Ready?</h2>
+    <div id="playArea"></div>
+    <div class="notice" id="feedback" aria-live="polite">Choose your answer to begin.</div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Next challenge →</button>
+    </div>
+  </section>
+
+  <section id="results" class="panel hidden">
+    <div class="hero">
+      <div class="emoji">🏆</div>
+      <div class="eyebrow">ROUND COMPLETE</div>
+      <h1>Well <span>played!</span></h1>
+      <p id="resultMessage">Here is your round summary.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="muted">SCORE</span><strong id="finalScore">0</strong></div>
+      <div class="stat"><span class="muted">ACCURACY</span><strong id="finalAccuracy">0%</strong></div>
+      <div class="stat"><span class="muted">BEST STREAK</span><strong id="finalStreak">0</strong></div>
+      <div class="stat"><span class="muted">AVG. TIME</span><strong id="avgTime">0s</strong></div>
+    </div>
+    <div class="notice" id="recommendation"></div>
+    <div class="actions" style="margin-top:22px">
+      <button class="btn" onclick="startGame(lastMode)">Play again</button>
+      <button class="btn secondary" onclick="goHome()">Home</button>
+    </div>
+  </section>
+</main>
+
+<footer>NEUROQUEST · Student AI & DS Project · Runs locally in your browser</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const names = {
+  memory: "Memory Matrix",
+  logic: "Logic Lab",
+  number: "Number Ninja"
+};
+
+let lastMode = "logic";
+let mode = "logic";
+let level = 1;
+let challenge = 0;
+let score = 0;
+let correct = 0;
+let attempts = 0;
+let streak = 0;
+let bestRoundStreak = 0;
+let totalResponse = 0;
+let questionStart = 0;
+let sequence = [];
+let sequenceInput = [];
+let waiting = false;
+let locked = false;
+let timerHandle = null;
+let remaining = 0;
+let answerValue = null;
+let history = loadData();
+
+function loadData() {
+  try {
+    return JSON.parse(localStorage.getItem("neuroQuestData")) || {
+      totalScore: 0, games: 0, bestAccuracy: 0,
+      bestStreak: 0, recent: [], byMode: {}
+    };
+  } catch (e) {
+    return {totalScore:0,games:0,bestAccuracy:0,bestStreak:0,recent:[],byMode:{}};
+  }
+}
+
+function saveData() {
+  try { localStorage.setItem("neuroQuestData", JSON.stringify(history)); }
+  catch (e) { /* Game remains playable if storage is unavailable. */ }
+  updateDashboard();
+}
+
+function updateDashboard() {
+  $("totalScore").textContent = history.totalScore;
+  $("gamesPlayed").textContent = history.games;
+  $("bestAccuracy").textContent = history.bestAccuracy + "%";
+  $("bestStreak").textContent = history.bestStreak;
+
+  if (!history.recent.length) {
+    $("coach").textContent = "Play a round to receive your first personalized practice tip.";
+    return;
+  }
+
+  const recent = history.recent.slice(-5);
+  const avg = recent.reduce((sum, r) => sum + r.accuracy, 0) / recent.length;
+  const weak = Object.entries(history.byMode)
+    .sort((a,b) => a[1].accuracy - b[1].accuracy)[0];
+
+  $("coach").textContent = avg < 60
+    ? "Try one challenge at a time and focus on accuracy before speed."
+    : weak && weak[1].games >= 2
+      ? "Your suggested practice: " + names[weak[0]] + ". Your recorded accuracy there is " + weak[1].accuracy + "%."
+      : "Great progress! Try another game mode to build a broader puzzle-solving routine.";
+}
+
+function show(section) {
+  ["home","game","results"].forEach(id => $(id).classList.add("hidden"));
+  $(section).classList.remove("hidden");
+}
+
+function goHome() {
+  clearInterval(timerHandle);
+  waiting = false;
+  show("home");
+  updateDashboard();
+}
+
+function resetData() {
+  if (!confirm("Clear all saved NeuroQuest scores on this browser?")) return;
+  history = {totalScore:0,games:0,bestAccuracy:0,bestStreak:0,recent:[],byMode:{}};
+  saveData();
+}
+
+function startGame(selectedMode) {
+  clearInterval(timerHandle);
+  mode = selectedMode;
+  lastMode = selectedMode;
+  const old = history.byMode[mode];
+  level = old && old.games >= 2 && old.accuracy >= 80 ? 2 : 1;
+  challenge = score = correct = attempts = streak = bestRoundStreak = totalResponse = 0;
+  show("game");
+  $("gameLabel").textContent = names[mode].toUpperCase();
+  $("feedback").textContent = "Complete five challenges. Your performance will guide the next round.";
+  nextQuestion();
+}
+
+function updateStats() {
+  $("roundScore").textContent = score;
+  $("accuracy").textContent = (attempts ? Math.round(correct / attempts * 100) : 0) + "%";
+  $("streak").textContent = streak;
+  $("difficulty").textContent = "LEVEL " + level;
+  $("roundLabel").textContent = "CHALLENGE " + challenge + " OF 5";
+  $("progressBar").style.width = (challenge / 5 * 100) + "%";
+}
+
+function startTimer() {
+  clearInterval(timerHandle);
+  remaining = 20;
+  $("timer").textContent = remaining + "s";
+  timerHandle = setInterval(() => {
+    if (waiting || locked) return;
+    remaining--;
+    $("timer").textContent = remaining + "s";
+    if (remaining <= 0) {
+      clearInterval(timerHandle);
+      if (mode === "memory" && !waiting) {
+        locked = true;
+        $("feedback").textContent = "Time is up! Try the next sequence.";
+        finishAttempt(false);
+      } else if (!waiting && !locked) {
+        locked = true;
+        $("feedback").textContent = "Time is up! The correct answer is " + answerValue + ".";
+        finishAttempt(false);
+        revealCorrect();
+      }
+    }
+  }, 1000);
+}
+
+function nextQuestion() {
+  clearInterval(timerHandle);
+  if (challenge >= 5) return finishGame();
+
+  challenge++;
+  waiting = false;
+  locked = false;
+  sequenceInput = [];
+  $("nextBtn").classList.add("hidden");
+  $("feedback").textContent = "Think carefully — you've got this!";
+  $("playArea").innerHTML = "";
+  updateStats();
+  questionStart = Date.now();
+
+  if (mode === "memory") makeMemory();
+  else makeQuiz();
+
+  startTimer();
+}
+
+function makeQuiz() {
+  let question, answer, options;
+
+  if (mode === "logic") {
+    const patterns = level === 1
+      ? [
+          ["Which one is different?", ["Apple","Mango","Carrot","Banana"], "Carrot"],
+          ["Which one is a mammal?", ["Shark","Dolphin","Trout","Octopus"], "Dolphin"],
+          ["Complete the pair: Book is to reading as fork is to…", ["Writing","Eating","Walking","Sleeping"], "Eating"],
+          ["Which shape has three sides?", ["Square","Pentagon","Triangle","Circle"], "Triangle"],
+          ["Which one does not belong?", ["Monday","March","Friday","Sunday"], "March"]
+        ]
+      : [
+          ["If all Zips are Zaps, and all Zaps are Zops, all Zips are…", ["Zops","Zaps only","Neither","Unknown"], "Zops"],
+          ["A is taller than B. B is taller than C. Who is shortest?", ["A","B","C","Cannot tell"], "C"],
+          ["Which is the odd one out?", ["16","25","36","48"], "48"],
+          ["If today is Tuesday, what day is 10 days later?", ["Thursday","Friday","Saturday","Sunday"], "Friday"],
+          ["Rearrange LISTEN to make a word.", ["SILENT","LITTLE","ENLISTED","STILES"], "SILENT"]
+        ];
+    [question, options, answer] = patterns[(challenge - 1) % patterns.length];
+  } else {
+    const n = level === 1 ? 2 + challenge : 4 + challenge;
+    const step = level === 1 ? 2 + challenge : 3 + challenge;
+    question = "Find the next number: " +
+      Array.from({length:4}, (_,i) => n + i * step).join(", ") + ", ?";
+    answer = n + 4 * step;
+    options = [answer, answer + step, answer - 2, answer + 2 * step];
+  }
+
+  answerValue = answer;
+  $("question").textContent = question;
+
+  // Shuffle options without changing the correct answer.
+  options = [...options].sort(() => Math.random() - 0.5);
+  const area = $("playArea");
+  area.className = "answers";
+
+  options.forEach(option => {
+    const b = document.createElement("button");
+    b.className = "answer";
+    b.textContent = option;
+    b.onclick = () => {
+      if (locked || waiting) return;
+      locked = true;
+      clearInterval(timerHandle);
+      const isCorrect = String(option) === String(answerValue);
+      b.classList.add(isCorrect ? "correct" : "wrong");
+      finishAttempt(isCorrect);
+      if (!isCorrect) revealCorrect();
+    };
+    area.appendChild(b);
+  });
+}
+
+function revealCorrect() {
+  document.querySelectorAll(".answer").forEach(b => {
+    if (b.textContent === String(answerValue)) b.classList.add("correct");
+    b.disabled = true;
+  });
+}
+
+function makeMemory() {
+  const symbols = ["◆","●","▲","★","■","♥","✦","⬟"];
+  const length = Math.min(3 + challenge + (level - 1), 8);
+  sequence = Array.from({length}, () => symbols[Math.floor(Math.random() * symbols.length)]);
+  $("question").textContent = "Memorize the sequence!";
+  $("playArea").className = "sequence";
+
+  sequence.forEach(symbol => {
+    const tile = document.createElement("div");
+    tile.className = "tile lit";
+    tile.textContent = symbol;
+    $("playArea").appendChild(tile);
+  });
+
+  waiting = true;
+  $("feedback").textContent = "Watch carefully. Your input tiles will appear in a moment.";
+
+  setTimeout(() => {
+    if ($("game").classList.contains("hidden") || challenge === 0) return;
+    waiting = false;
+    $("question").textContent = "Repeat the sequence";
+    $("playArea").innerHTML = "";
+    $("playArea").className = "sequence";
+
+    const symbols = ["◆","●","▲","★","■","♥","✦","⬟"];
+    symbols.forEach(symbol => {
+      const b = document.createElement("button");
+      b.className = "tile";
+      b.textContent = symbol;
+      b.onclick = () => chooseMemory(symbol, b);
+      $("playArea").appendChild(b);
+    });
+    $("feedback").textContent = "Tap the symbols in the same order.";
+    questionStart = Date.now();
+    startTimer();
+  }, 1300 + length * 180);
+}
+
+function chooseMemory(symbol, button) {
+  if (locked || waiting) return;
+  button.disabled = true;
+  sequenceInput.push(symbol);
+  button.classList.add("lit");
+
+  const index = sequenceInput.length - 1;
+  if (sequenceInput[index] !== sequence[index]) {
+    locked = true;
+    clearInterval(timerHandle);
+    $("feedback").textContent = "Not quite! The correct sequence was " + sequence.join(" ");
+    finishAttempt(false);
+    return;
+  }
+
+  if (sequenceInput.length === sequence.length) {
+    locked = true;
+    clearInterval(timerHandle);
+    $("feedback").textContent = "Perfect memory! Sequence completed.";
+    finishAttempt(true);
+  }
+}
+
+function finishAttempt(isCorrect) {
+  clearInterval(timerHandle);
+  waiting = false;
+  attempts++;
+  const elapsed = Math.max(0, (Date.now() - questionStart) / 1000);
+  totalResponse += elapsed;
+
+  if (isCorrect) {
+    correct++;
+    streak++;
+    bestRoundStreak = Math.max(bestRoundStreak, streak);
+    score += Math.max(10, 100 - Math.round(elapsed * 3)) * level;
+    $("feedback").textContent = "Correct! +" + (Math.max(10, 100 - Math.round(elapsed * 3)) * level) + " points.";
+  } else {
+    streak = 0;
+    if (! $("feedback").textContent.includes("Time is up")) {
+      $("feedback").textContent = "Keep going! Learn from this challenge and try the next one.";
+    }
+  }
+
+  // Adaptive difficulty: transparent performance-based rules.
+  // Two strong consecutive answers can raise the level.
+  if (isCorrect && elapsed < 10 && streak >= 2) level = Math.min(3, level + 1);
+  if (!isCorrect) level = Math.max(1, level - 1);
+
+  updateStats();
+  $("nextBtn").classList.remove("hidden");
+  if (challenge === 5) $("nextBtn").textContent = "View results →";
+}
+
+function finishGame() {
+  clearInterval(timerHandle);
+  const accuracy = attempts ? Math.round(correct / attempts * 100) : 0;
+  const average = attempts ? (totalResponse / attempts).toFixed(1) : "0.0";
+
+  history.totalScore += score;
+  history.games++;
+  history.bestAccuracy = Math.max(history.bestAccuracy, accuracy);
+  history.bestStreak = Math.max(history.bestStreak, bestRoundStreak);
+  history.recent.push({mode, score, accuracy, date: new Date().toLocaleDateString()});
+  history.recent = history.recent.slice(-20);
+
+  if (!history.byMode[mode]) history.byMode[mode] = {games:0, accuracy:0};
+  const stats = history.byMode[mode];
+  stats.accuracy = Math.round((stats.accuracy * stats.games + accuracy) / (stats.games + 1));
+  stats.games++;
+
+  saveData();
+  $("finalScore").textContent = score;
+  $("finalAccuracy").textContent = accuracy + "%";
+  $("finalStreak").textContent = bestRoundStreak;
+  $("avgTime").textContent = average + "s";
+  $("resultMessage").textContent = correct + " out of " + attempts +
+    " challenges solved in " + names[mode] + ".";
+  $("recommendation").textContent = accuracy >= 80
+    ? "Excellent round! Try another mode or aim for a higher level next time."
+    : accuracy >= 50
+      ? "Good effort. Practise steadily and focus on accuracy before speed."
+      : "Keep practising! Repeat this mode at your own pace to build familiarity.";
+  show("results");
+}
+
+updateDashboard();
+</script>
+</body>
+</html>
